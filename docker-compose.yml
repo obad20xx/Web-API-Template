@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  build:
+    build:
+      context: .
+      dockerfile: Dockerfile.build
+    volumes:
+      - build_artifacts:/out
+
+  webapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - build_artifacts:/app
+      - ./cert.pfx:/app/cert.pfx
+    ports:
+      - "5000:80"
+      - "5001:443"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+    depends_on:
+      - build
+
+volumes:
+  build_artifacts:
